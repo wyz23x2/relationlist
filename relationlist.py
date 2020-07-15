@@ -3,7 +3,6 @@ __all__ = ['__version__',
            'Iterable',
            'Generator',
            '__author__',
-           'str2',
            'const']
 __version__ =  '0.17.6'
 class str2(str):

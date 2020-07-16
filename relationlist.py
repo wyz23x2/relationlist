@@ -3,7 +3,7 @@ __all__ = ['__version__',
            'Iterable',
            'Generator',
            '__author__']
-__version__ =  '1.0.0b1'
+__version__ =  '1.0.0a1'
 class str2(str):
     def __str__(self):
         return super().__str__().rstrip('\n')

@@ -1,4 +1,4 @@
-# relationlist 1.0.0b1
+# relationlist 1.1.0
 This is the relationlist module, containing a class that supports relations.  
 Example:
 ```python
@@ -10,4 +10,4 @@ Example:
 >>> lis.relations
 [(1, 3, 'break', '1+3=4')]
 ```
-The Read the Doc document is comming before v1.3.0!
+See more at [the official documentation](https://relationlist.readthedocs.io/)!

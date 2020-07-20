@@ -3,7 +3,7 @@ __all__ = ['__version__',
            'Iterable',
            'Generator',
            '__author__']
-__version__ =  '1.0.0a1'
+__version__ =  '1.1.1'
 class str2(str):
     def __str__(self):
         return super().__str__().rstrip('\n')
@@ -15,39 +15,37 @@ Email: wyz23x2@163.com
 del str2
 from typing import Iterable
 import warnings as _w
+import pickle as _pickle
 class RelationList(object):
     '''Relation list class.'''
     __slots__ = ('lis', 'relations', 'elm')
-    def __init__(self, lis:list =None, /):
-        if lis is None:
-            lis = []
-        if isinstance(lis, str):
-            lis = list(lis)
-        if not isinstance(lis, list):
-            raise TypeError("Invaild argument 'lis'.")
-        self.lis = lis
+    def __init__(self, iterable:Iterable =(), /):
+        if iterable is None:
+            iterable = []
+        try:
+            iterable = list(iterable)
+        except Exception:
+            raise TypeError("Invaild argument 'iterable'.")
+        self.lis = iterable
         self.relations = []
         self.elm = {}
-        for i in range(len(lis)):
-            self.elm[lis[i]] = 0
+        for i in range(len(iterable)):
+            self.elm[iterable[i]] = 0
     def __str__(self) -> str:
-        '''Run when str() is run.'''
+        '''Ran when str() is run.'''
         return str(self.__getattribute__('lis', a=False))
-    def __repr__(self) -> tuple:
-        '''Run when repr() is run.'''
-        return repr((self.__getattribute__('lis', a=False), self.relations, self.elm))
+    def __repr__(self) -> str:
+        '''Ran when repr() is run.'''
+        return f"RelationList({str(self.__getattribute__('lis', a=False)).lstrip('[').rstrip(']')})"
     def __iter__(self) -> Iterable:
-        '''Run when iter()/list()/tuple()/set() is run'''
-        a = []
-        for i in range(len(self.__getattribute__('lis', a=False))):
-            a.append((self.__getattribute__('lis', a=False)[i], self.elm[self.__getattribute__('lis', a=False)[i]]))
-        return iter(a)
+        '''Ran when iter()/list()/tuple()/set() is run.'''
+        return iter(self.value)
     def __len__(self) -> int:
-        '''Run when len() is run.'''
+        '''Ran when len() is run.'''
         return len(self.__getattribute__('lis', a=False))           
     def __bool__(self) -> bool:
-        '''Run when bool() is run.'''
-        return not self.__getattribute__('lis', a=False) == []
+        '''Ran when bool() is run.'''
+        return bool(self.__getattribute__('lis', a=False))
     def __eq__(self, other) -> bool:
         '''The == operator.'''
         if isinstance(other, type(self)):
@@ -78,18 +76,13 @@ class RelationList(object):
             self.__getattribute__('lis', a=False).extend(other.lis)
             self.relations.extend(other.relations)
             for i in range(len(n:=other.elm)):
-                self.elm[list(n.keys())[i]] = list(n.values())[i]
+                try:
+                    self.elm[list(n.keys())[i]] += list(n.values())[i]
+                except KeyError:
+                    self.elm[list(n.keys())[i]] = list(n.values())[i]
         else:
             return NotImplemented
         return self
-    def __and__(self, other):
-        if isinstance(other, RelationList):
-            a = []
-            for i in set(self.relations+other.relations):
-                a.append(i)
-            return a
-        else:
-            return NotImplemented
     def __or__(self, other):
         if isinstance(other, RelationList):
             return RelationList(self.__getattribute__('lis', a=False)+other.lis)
@@ -115,7 +108,8 @@ class RelationList(object):
             if fmt[i] == '%' and i != len(fmt):
                 if fmt[i+1] in list(dic.keys()):
                     if fmt[i+1] == 'T':
-                        raise PendingDeprecationWarning("%T format will be removed in v1.3.0.")
+                        _w.warn("The %T format code is deprecated and will be removed in v3.0.",
+                                PendingDeprecationWarning, stacklevel=2)
                     string += str(dic[fmt[i+1]])
                     flag = True
                 else:
@@ -125,8 +119,8 @@ class RelationList(object):
                 flag = False
                 string += fmt[i]
         return string
-    def __getitem__(self, key, /):
-        return self.__getattribute__('lis', a=False)[key]
+    def __getitem__(self, index, /):
+        return self.__getattribute__('lis', a=False)[index]
     def __setitem__(self, key, value, /):
         if isinstance(key, int):
             key = slice(key,key+1,None)
@@ -142,14 +136,14 @@ class RelationList(object):
         for i in range(key.start,key.stop,key.step):
             self.delete(self.__getattribute__('lis', a=False)[i])
             self.add(value, index=i)
-    def __delitem__(self, key, /):
-        if isinstance(key, int):
-            key = slice(key,key+1,None)
-        if key.step == None:
+    def __delitem__(self, index, /):
+        if isinstance(index, int):
+            index = slice(index, index+1, None)
+        if index.step == None:
             step = 1
-        if key.stop == None:
+        if index.stop == None:
             stop = len(self)
-        if key.start == None:
+        if index.start == None:
             start = 0
         ln = len(self)
         if start > ln or start > ln:
@@ -171,11 +165,10 @@ class RelationList(object):
         self.clear_relations()
     def __getattribute__(self, name, a=True):
         if name == 'lis' and a:
-            _w.simplefilter('module')
-            _w.warn('Directly using .lis is deprecated and will raise an error in v1.3. Please use .value', DeprecationWarning)
+            raise AttributeError("'RelationList' object has no attribute 'lis'.")
         return object.__getattribute__(self, name)
     def __delattr__(self, name):
-        raise PermissionError(f"Cannot delete attribute '{name}'.")
+        raise ValueError(f"Cannot delete attribute {name!r}.")
     def __dir__(self):
         x = object.__dir__(self)
         try:
@@ -187,7 +180,10 @@ class RelationList(object):
     def value(self) -> list:
         '''Returns the value of the list.'''
         import copy
-        return copy.deepcopy(self.__getattribute__('lis', a=False))
+        try:
+            return copy.deepcopy(self.__getattribute__('lis', a=False))
+        except _pickle.PicklingError:
+            return copy.copy(self.__getattribute__('lis', a=False))
     def relate(self, val1, val2, /, mode:str ='break', assignment=None):
         '''Creates a relation between two elements.'''
         if val1 not in self.__getattribute__('lis', a=False) and val2 not in self.__getattribute__('lis', a=False):
@@ -213,11 +209,11 @@ class RelationList(object):
         else:
             self.__getattribute__('lis', a=False).insert(index, val)
         self.elm[val] = 0
-    def delete(self, val, /, *, err:str ="raise"):
+    def delete(self, val, /, *, err:str ="raise") -> bool:
         '''Deletes an element in the list.'''
         if err not in ("raise", "ignore"):
             raise ValueError(f"Invaild parameter 'err': {err}")
-        elif val not in self.__getattribute__('lis', a=False):
+        elif val not in self.value:
             if err == "raise":
                 raise ValueError(f"Value {val} not found.")
             elif err == "ignore":
@@ -243,7 +239,9 @@ class RelationList(object):
                             self.__getattribute__('lis', a=False).remove(y)
                             del self.elm[val]
                             del self.elm[y]
+                return True
     def remove_relation(self, val1, val2, /, *, err="raise"):
+        '''Removes the relation given.'''
         if err not in ("raise", "ignore"):
             raise ValueError(f"Invaild argument '{err}' for parameter err.")
         flag = False
@@ -263,51 +261,69 @@ class RelationList(object):
                     del self.elm[y]
         if not flag and err == "raise":
             raise ValueError(f"Relation between {val1} and {val2} not found.")
+        elif not flag:
+            return False
+        else:
+            return True
     def relate_all(self, mode:str ='break', assignments=None):
         '''Create relations between all elements.'''
         self.clear_relations()
-        for i in range(len(li := self.__getattribute__('lis', a=False))-1):
+        for i in range(len(li:=self.__getattribute__('lis', a=False))-1):
             for j in range(i+1, len(li)-1):
-                if not isinstance(assignments, (list, tuple)):
+                if not isinstance(assignments, Iterable):
                     self.relate(li[i], li[j], mode, assignments)
                 else:
                     try:
                         self.relate(li[i], li[j], mode, assignments[i])
                     except IndexError:
-                        self.relate(li[i], li[j], mode, None)
-    def erase_relations(self):
+                        self.relate(li[i], li[j], mode, assignments[-1])
+    def clear_relations(self):
+        '''Erases all the relations.'''
         self.__init__(self.value)
-    clear_relations = erase_relations
+    erase_relations = clear_relations
     def related(self, val1, val2, /) -> bool:
+        '''Returns True if two values are related.'''
         try:
-            self.get_relate(val1, val2)
+            self.get_relation(val1, val2)
         except ValueError:
             return False
         else:
             return True
-    def get_relates(self, key, /) -> list:
+    def get_relations(self, key, /) -> list:
         '''Returns all of the relations with the element.'''
-        if val not in self.__getattribute__('lis', a=False):
-            raise KeyError(f"Key {val} not found.")
+        if key not in self.__getattribute__('lis', a=False):
+            raise ValueError(f"Key {val} not found.")
         a = []
         for i in range(len(r := self.relations)):
-            if val in r[i][:2]:
+            if key in r[i][:2]:
                 a.append(r[i])
         return a
-    def get_relate(self, val1, val2, /) -> tuple:
+    def get_relates(self, *args, **kwargs):
+        '''Deprecated. Use get_relations().'''
+        _w.warn('get_relates() is deprecated and will be removed in v1.4. Use get_relations().',
+                DeprecationWarning, 2)
+        return self.get_relations(*args, **kwargs)
+    def get_relation(self, val1, val2, /) -> tuple:
         '''Returns the relation information between two values.'''
         for i in range(len(r := self.relations)):
             if val1 in r[i][:2] and val2 in r[i][:2]:
                 return r[i]
         else:
             raise ValueError(f"Relation between {val1} and {val2} not found.")
+    def get_relate(self, *args, **kwargs):
+        '''Deprecated. Use get_relation().'''
+        _w.warn('get_relate() is deprecated and will be removed in v1.4. Use get_relation().',
+                DeprecationWarning, 2)
+        return self.get_relation(*args, **kwargs)
     def generator(self, *, func:bool =False):
+        '''Returns a generator yielding self.value. Returns the function with __call__ if `func` is true.'''
         def gen():
             yield from self.value
         return gen() if not func else gen
     def copy(self, *, deep:bool =True):
+        '''Copys self. Uses copy.deepcopy if 'deep' is True, else copy.copy.'''
+        import copy as c
         if deep:
-            import copy as c
             return c.deepcopy(self)
         else:
-            return self
+            return c.copy(self)

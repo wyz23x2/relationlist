@@ -1,13 +1,11 @@
 import setuptools
-with open('README.rst') as f:
-    ld = f.read()
 setuptools.setup(
     name = 'relationlist',
     version = '1.1.0',
     author = 'wyz23x2',
     author_email = 'wyz23x2@163.com',
     description = 'A module that contains a class that supports relations.',
-    long_description = ld,
+    long_description = '''See `the official documentation <https://relationlist.readthedocs.io>`_\ .''',
     packages = setuptools.find_packages(),
     classifiers = [
         "License :: OSI Approved :: MIT License",

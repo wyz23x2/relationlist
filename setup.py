@@ -9,7 +9,7 @@ setuptools.setup(
     packages = setuptools.find_packages(),
     classifiers = [
         "License :: OSI Approved :: MIT License",
-        "Development Status :: 6 - Mature",
+        "Development Status :: 4 - Beta",
         "Operating System :: Microsoft :: Windows :: Windows 7",
         "Operating System :: Microsoft :: Windows :: Windows 8.1",
         "Operating System :: Microsoft :: Windows :: Windows 10",

@@ -19,8 +19,6 @@ class RelationList(object):
     '''Relation list class.'''
     __slots__ = ('lis', 'relations', 'elm')
     def __init__(self, iterable:Iterable =(), /):
-        if iterable is None:
-            iterable = []
         try:
             iterable = list(iterable)
         except Exception:

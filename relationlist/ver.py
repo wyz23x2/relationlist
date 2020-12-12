@@ -9,7 +9,7 @@ class ver(object):
                 'version']
     @property
     def raw(self):
-        raw = '1.2.0rc1'
+        raw = '1.2.0'
     @property
     def md5(self):
         md5 = _md5(raw.encode()).hexdigest()
@@ -17,7 +17,7 @@ class ver(object):
     def version(self):
         version = _nt('version_info', ('major', 'minor', 'micro',
                                        'releaselevel', 'serial'),
-                  module='relationlist.ver')(1, 2, 0, 'candidate', 1)
+                  module='relationlist.ver')(1, 2, 0, 'final', 0)
 # 'a':   alpha
 # 'b':   beta
 # 'rc':  candidate

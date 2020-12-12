@@ -21,5 +21,5 @@ class ver(object):
 # 'a':   alpha
 # 'b':   beta
 # 'rc':  candidate
-# '':    final
+# 'final':    final
 _sys.modules[__name__] = ver()

@@ -10,10 +10,9 @@ setuptools.setup(
     classifiers = [
         "License :: OSI Approved :: MIT License",
         "Development Status :: 6 - Mature",
-        "Operating System :: Microsoft :: Windows :: Windows 7",
         "Operating System :: Microsoft :: Windows :: Windows 8.1",
         "Operating System :: Microsoft :: Windows :: Windows 10",
-        "Operating System :: Microsoft :: Windows :: Windows 8",
+        "Operating System :: Microsoft :: Windows :: Windows 8",  # NOTE: Windows 8 support will be dropped in v2.0.
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX :: Linux",
         "Programming Language :: Python :: 3.8",

@@ -315,10 +315,19 @@ class RelationList(object):
                 DeprecationWarning, 2)
         return self.get_relation(*args, **kwargs)
     def generator(self, *, func:bool =False):
-        '''Returns a generator yielding self.value. Returns the function with __call__ if `func` is true.'''
+        '''Returns a generator yielding self.value.
+        Note: the `func` parameter is deprecated; use generator_func() instead.'''
         def gen():
             yield from self.value
+        if func:
+            _w.warn('generator(func=True) is deprecated and will be removed in v1.4. Use generator_func() instead.',
+                    DeprecationWarning, 2)
         return gen() if not func else gen
+    def generator_func(self):
+        '''Returns a func that returns a generator yielding self.value.'''
+        def gen():
+            yield from self.value
+        return gen
     def copy(self, *, deep:bool =True):
         '''Copys self. Uses copy.deepcopy if 'deep' is True, else copy.copy.'''
         import copy as c

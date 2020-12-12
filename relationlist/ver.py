@@ -1,25 +1,13 @@
 import sys as _sys
 from collections import namedtuple as _nt
 from hashlib import md5 as _md5
-class ver(object):
-    @property
-    def __all__(self):
-        return ['raw',
-                'md5',
-                'version']
-    @property
-    def raw(self):
-        raw = '1.2.0'
-    @property
-    def md5(self):
-        md5 = _md5(raw.encode()).hexdigest()
-    @property
-    def version(self):
-        version = _nt('version_info', ('major', 'minor', 'micro',
-                                       'releaselevel', 'serial'),
-                  module='relationlist.ver')(1, 2, 0, 'final', 0)
+__all__ = ['raw', 'md5', 'version']
+raw = '1.2.1'
+md5 = _md5(raw.encode()).hexdigest()
+version = _nt('version_info', ('major', 'minor', 'micro',
+                                'releaselevel', 'serial'),
+              module='relationlist.ver')(1, 2, 1, 'final', 0)
 # 'a':   alpha
 # 'b':   beta
 # 'rc':  candidate
 # 'final':    final
-_sys.modules[__name__] = ver()

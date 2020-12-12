@@ -1,7 +1,7 @@
 import setuptools
 setuptools.setup(
     name = 'relationlist',
-    version = '1.2.0rc1',
+    version = '1.2.0',
     author = 'wyz23x2',
     author_email = 'wyz23x2@163.com',
     description = 'A module that contains a class that supports relations.',

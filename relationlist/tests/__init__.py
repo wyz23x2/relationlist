@@ -1,7 +1,8 @@
 def test(verbosity=2, *, failfast=False):
     ff = " -f" if failfast else ""
     try:
-        import green1
+        import green
+        # import green_ # test
     except ImportError:
         import warnings
         warnings.simplefilter('once', ImportWarning)

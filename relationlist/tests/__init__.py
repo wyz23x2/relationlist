@@ -11,7 +11,7 @@ def test(verbosity=2, *, failfast=False):
         unittest.main('test', verbosity=verbosity)
     else:
         import subprocess, os
-        os.chdir(os.path.sep.join(__file__.spplit(os.path.sep)[:-1]))
+        os.chdir(os.path.sep.join(__file__.split(os.path.sep)[:-1]))
         os.chdir('..')
         os.chdir('..')
         try:

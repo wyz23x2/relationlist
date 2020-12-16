@@ -1,4 +1,4 @@
-# relationlist 1.2.1
+# relationlist 2.0.0a0
 This is the relationlist module, containing a class that supports relations.  
 Example:
 ```python

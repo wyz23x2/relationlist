@@ -326,10 +326,11 @@ class RelationList(object):
         def gen():
             yield from self.value
         return gen
-    def copy(self, *, deep:bool =True):
-        '''Copys self. Uses copy.deepcopy if 'deep' is True, else copy.copy.'''
+    def copy(self):
+        '''Copy method.'''
         import copy as c
-        if deep:
+        try:
             return c.deepcopy(self)
-        else:
+        except Exception:
             return c.copy(self)
+    __copy__ = copy
